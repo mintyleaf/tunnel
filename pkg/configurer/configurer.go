@@ -43,7 +43,7 @@ func ApplyStaticHosts(c *config.C, hosts map[string][]string) error {
 }
 
 func ApplyPortMappings(c *config.C, portMappings []string) error {
-	portMappingSlice := []map[string]any{}
+	portMappingSlice := []any{}
 
 	for _, portMapping := range portMappings {
 		matches := mappingRegex.FindStringSubmatch(portMapping)
@@ -76,10 +76,15 @@ func ApplyPortMappings(c *config.C, portMappings []string) error {
 			return fmt.Errorf("invalid protocol '%s' in mapping '%s'. must be tcp, udp, or both", protoStr, portMapping)
 		}
 
+		protocolsAny := make([]any, len(protocols))
+		for i, p := range protocols {
+			protocolsAny[i] = p
+		}
+
 		portMappingSlice = append(portMappingSlice, map[string]any{
 			"listen_port":  port,
 			"dial_address": host,
-			"protocols":    protocols,
+			"protocols":    protocolsAny,
 		})
 	}
 

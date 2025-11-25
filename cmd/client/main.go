@@ -108,6 +108,10 @@ func main() {
 	}
 
 	fwdList := port_forwarder.NewPortForwardingList()
+	if err := port_forwarder.ParseConfig(l, connCfg, fwdList); err != nil {
+		util.LogWithContextIfNeeded("Failed to parse port forwarder config", err, l)
+		os.Exit(1)
+	}
 	pfService, err := port_forwarder.ConstructFromInitialFwdList(service, l, &fwdList)
 	if err != nil {
 		util.LogWithContextIfNeeded("Failed to start", err, l)
