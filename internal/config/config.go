@@ -61,7 +61,7 @@ func LoadConfig(cfg interface{}) error {
 
 		if val, ok := os.LookupEnv(envName); ok {
 			switch field.Type.Kind() {
-			case reflect.String:
+			case reflect.String, reflect.Bool:
 				defaultValue = val
 			case reflect.Slice:
 				if field.Type.Elem().Kind() == reflect.String {
