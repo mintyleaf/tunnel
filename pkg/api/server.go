@@ -95,6 +95,7 @@ func NewAPIServer(
 	)
 	webService.With(
 		authService.MasterAuthMiddleware,
+		authService.RequireAuthMiddleware,
 	).Method(http.MethodGet, "/token", nethttp.NewHandler(tokenInteractor))
 
 	webService.Docs("/docs", swgui.New)

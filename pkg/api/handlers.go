@@ -66,7 +66,6 @@ func (s APIService) ConnectGet(ctx context.Context, input struct{}, output *Conn
 	}
 
 	output.ConnectionConfig = string(connCfgBytes)
-
 	return nil
 }
 
@@ -75,5 +74,11 @@ type TokenGetOutput struct {
 }
 
 func (s APIService) TokenGet(ctx context.Context, input struct{}, output *TokenGetOutput) error {
+	token, err := s.AuthService.NewToken()
+	if err != nil {
+		return status.Wrap(fmt.Errorf("new token: %w", err), status.Internal)
+	}
+
+	output.OntTimeToken = token
 	return nil
 }

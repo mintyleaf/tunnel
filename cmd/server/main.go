@@ -58,11 +58,16 @@ func main() {
 		log.Fatalf("open DB connection: %v", err)
 	}
 
+	if err := ipam.InitTables(db); err != nil {
+		log.Fatalf("initialize IPAM tables: %v", err)
+	}
+	if err := api.InitTables(db); err != nil {
+		log.Fatalf("initialize API Auth tables: %v", err)
+	}
 	ipamService := ipam.IPAMService{
 		DB:          db,
 		NetworkCIDR: cfg.NetworkCIDR,
 	}
-	ipam.InitTables(db)
 
 	// TODO: also check file info (is dir)
 	_, caKeyErr := os.Stat(cfg.CAKeyPath)
@@ -101,7 +106,6 @@ func main() {
 		log.Fatalf("read CA cert from %s: %v", cfg.CACertPath, err)
 	}
 
-	// TODO: move out config routine
 	if !connCfgExists {
 		log.Printf("[INFO] generating server keypair with NetworkCIDR %s at %s", cfg.NetworkCIDR, cfg.ConnectionCfgPath)
 

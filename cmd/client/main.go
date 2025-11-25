@@ -53,7 +53,16 @@ func main() {
 	_, connCfgErr := os.Stat(cfg.ConnectionCfgPath)
 	if os.IsNotExist(connCfgErr) {
 		// TODO security, move that call to the api package
-		resp, err := http.Get(cfg.APIAddr + "/connect")
+		req, err := http.NewRequest(http.MethodGet, cfg.APIAddr+"/connect", nil)
+		if err != nil {
+			log.Fatalf("creating http request: %v", err)
+		}
+
+		req.Header.Set("Authorization", "Bearer "+cfg.Token)
+
+		client := &http.Client{}
+		resp, err := client.Do(req)
+
 		if err != nil {
 			log.Fatalf("making http request: %v", err)
 		}
